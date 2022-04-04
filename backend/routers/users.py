@@ -5,12 +5,14 @@ from sqlalchemy.orm import Session
 from services.user import models, schemes
 from services.user.logic import UserLogic
 from fastapi import APIRouter, Path, Depends, HTTPException
-
+from core.auth import AuthHandler
 
 models.Base.metadata.create_all(bind=engine)
 
 router = APIRouter()
-logic = UserLogic()
+auth_handler = AuthHandler()
+logic = UserLogic(auth_handler)
+
 
 
 @router.post("/user/", response_model=schemes.User, tags=['User'])
@@ -56,3 +58,22 @@ async def patch_user(user_id: int, user: schemes.UserPatch, db: Session = Depend
 async def put_user(user_id: int, user: schemes.UserCreate, db: Session = Depends((get_db))):
     res = logic.put_user(db=db, user=user, user_id=user_id)
     return res
+
+
+@router.post("/users/login", tags=["User"])
+async def login(user: schemes.UserToken, db: Session = Depends(get_db)):
+    """
+    Generate token for user
+    :param user:
+    :return token:
+    """
+    user_old = logic.get_user_by_login(db, user.login)
+    print(user_old)
+    if not user_old.login == user.login:
+        return HTTPException(status_code=400, detail="Does not correct login")
+    if auth_handler.verify_password(user.password, user_old.hash_password):
+        token = auth_handler.encode_token(user_old.id, age=18)  # TODO
+        return {"token": token}
+    return HTTPException(status_code=400, detail="Does not correct password")
+
+

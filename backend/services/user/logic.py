@@ -14,8 +14,8 @@ logger.add(config.LOG_FILE, format=config.format, level=config.level, rotation=c
            compression=config.compression)
 
 class UserLogic:
-    def __init__(self):
-        self.auth_handler = AuthHandler()
+    def __init__(self,auth_handler):
+        self.auth_handler = auth_handler
 
     def check_none(self):
         pass

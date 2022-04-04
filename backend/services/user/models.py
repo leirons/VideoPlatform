@@ -1,5 +1,7 @@
 from sqlalchemy import Column, Integer, String, DateTime
 from core.db import Base
+from sqlalchemy.orm import relationship
+from services.comments.models import Comments
 
 
 class User(Base):
@@ -9,3 +11,6 @@ class User(Base):
     email = Column(String)
     hash_password = Column(String)
     register_date = Column(DateTime)
+
+    party = relationship(Comments,back_populates="owner")
+

@@ -53,3 +53,11 @@ class UserPatch(BaseModel):
         if validate_email(email):
             return email
         return ValidationError("Email does not correct")
+
+
+class UserToken(BaseModel):
+    password: str
+    login: str
+
+    class Config:
+        orm_mode = True
