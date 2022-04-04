@@ -1,11 +1,9 @@
-Потраченное время на выполнение тестового задания: 5 часов
 
-Я не все тесты прописал, написал пару важных что бы показать что я имею понятия с ними и могу применять
 
 # Want to use this project?
 
+На данный момент используется sqlite, но в docker-compose.yml лежит образ postgres и настройки к нему, что бы изменить sqlite на postgres зайди в `core/config.py` и в db_url возьму с env ```DATABASE_URL```
 
 ``` 
 docker-compose up -d --build
-docker-compose exec web alembic upgrade head
 ```
